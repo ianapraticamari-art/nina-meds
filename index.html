@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2A9D8F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nega Meds">
+  <title>Central de Medicamentos da Nega</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ╔══════════════════════════════╗
+     ║        TELA DE LOGIN         ║
+     ╚══════════════════════════════╝ -->
+<div id="login-screen" class="screen active">
+  <div class="login-card">
+
+    <div class="lp-ring">
+      <img src="nina.jpg" alt="Nina" class="lp-img"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="lp-fb" style="display:none">🐾</div>
+    </div>
+
+    <h1 class="l-title">Central de Medicamentos da Nega</h1>
+    <p class="l-sub">Quem está cuidando agora?</p>
+
+    <input type="text" id="caregiver-name" class="l-input"
+      placeholder="Digite seu nome…" autocomplete="off" maxlength="40">
+
+    <button id="enter-btn" class="l-btn">Entrar no sistema</button>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║        TELA PRINCIPAL        ║
+     ╚══════════════════════════════╝ -->
+<div id="app-screen" class="screen">
+
+  <!-- ── Header sticky ── -->
+  <header class="hdr">
+    <div class="hdr-in">
+      <div class="hdr-left">
+        <div class="hp-ring">
+          <img src="nina.jpg" alt="" class="hp-img"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="hp-fb" style="display:none">🐾</div>
+        </div>
+        <div class="hdr-text">
+          <span class="hdr-name">Central de Medicamentos da Nega</span>
+          <span id="day-badge" class="day-badge"></span>
+        </div>
+      </div>
+      <span id="conn-dot" class="conn-dot connecting" title="Status da conexão"></span>
+    </div>
+  </header>
+
+  <!-- ── Dashboard: 4 chips ── -->
+  <div class="chips-wrap">
+    <div class="chip chip-green">
+      <span id="c-done" class="chip-n">—</span>
+      <span class="chip-l">doses dadas</span>
+    </div>
+    <div class="chip chip-orange">
+      <span id="c-pend" class="chip-n">—</span>
+      <span class="chip-l">pendentes</span>
+    </div>
+    <div class="chip chip-blue">
+      <span id="c-pct" class="chip-n">—</span>
+      <span class="chip-l">eficiência</span>
+    </div>
+    <div class="chip chip-teal">
+      <span id="c-next" class="chip-n">—</span>
+      <span class="chip-l">próximo horário</span>
+    </div>
+  </div>
+
+  <!-- ── Barra de progresso ── -->
+  <div class="prog-area">
+    <div class="prog-track"><div id="prog-fill" class="prog-fill"></div></div>
+    <span id="prog-label" class="prog-label"></span>
+  </div>
+
+  <!-- ── Conteúdo rolável ── -->
+  <div class="page-body">
+
+    <!-- Checklist -->
+    <section class="block">
+      <div class="sec-row">
+        <span class="sec-title">Horários de hoje</span>
+        <div class="sec-line"></div>
+      </div>
+      <div id="checklist">
+        <div class="st-loading">
+          <div class="spinner"></div>
+          <p>Carregando doses…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alertas -->
+    <section class="block">
+      <div class="sec-row">
+        <span class="sec-title">Atenção</span>
+        <div class="sec-line"></div>
+      </div>
+      <div class="alert-card al-yellow">
+        <span class="al-ico">⚠️</span>
+        <div><p class="al-title">Reavaliar pressão</p><p class="al-date">30/05/2026</p></div>
+      </div>
+      <div class="alert-card al-blue">
+        <span class="al-ico">🔬</span>
+        <div><p class="al-title">Reavaliar urinálise</p><p class="al-date">30/05/2026</p></div>
+      </div>
+      <div class="alert-card al-red">
+        <span class="al-ico">💉</span>
+        <div><p class="al-title">Meropenem encerra</p><p class="al-date">23/05/2026</p></div>
+      </div>
+    </section>
+
+  </div><!-- /page-body -->
+
+  <!-- ── Footer fixo ── -->
+  <footer class="ftr">
+    <div class="ftr-in">
+      <span class="ftr-ico">👤</span>
+      <span id="ftr-name" class="ftr-name"></span>
+      <button id="change-user-btn" class="btn-trocar">Trocar</button>
+    </div>
+  </footer>
+
+</div><!-- /app-screen -->
+
+<!-- Toast global -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>

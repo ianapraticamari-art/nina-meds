@@ -1,0 +1,23 @@
+{
+  "name": "Central de Medicamentos da Nega",
+  "short_name": "Nina Meds",
+  "description": "Controle de medicamentos da cachorra Nina",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#2A9D8F",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/nina-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/nina-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popular banco — Nina Meds</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: #F4F6FA;
+      color: #0F172A;
+      padding: 32px 20px 60px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    h1 { font-size: 22px; font-weight: 800; color: #6D28D9; margin-bottom: 6px; }
+
+    .subtitle {
+      font-size: 14px;
+      color: #64748B;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .meds-preview {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .meds-preview h2 { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 14px; }
+
+    .med-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+    .med-row:last-child { border-bottom: none; }
+
+    .med-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-red   { background: #DC2626; }
+    .dot-amber { background: #D97706; }
+    .dot-blue  { background: #2563EB; }
+    .dot-green { background: #059669; }
+
+    .med-nm   { font-weight: 700; min-width: 140px; }
+    .med-info { color: #64748B; font-size: 12px; }
+
+    .total-badge {
+      display: inline-block;
+      background: #EDE9FE;
+      color: #6D28D9;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 13px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:disabled { opacity: 0.5; cursor: wait; }
+
+    #seed-btn  { background: #6D28D9; color: white; box-shadow: 0 4px 12px rgba(109,40,217,0.3); }
+    #clear-btn { background: #FEE2E2; color: #991B1B; }
+
+    .log-box {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      padding: 18px 20px;
+      font-size: 13px;
+      line-height: 2;
+      max-height: 340px;
+      overflow-y: auto;
+      font-family: 'Figtree', monospace;
+    }
+
+    .lg-ok   { color: #059669; font-weight: 600; }
+    .lg-err  { color: #DC2626; font-weight: 600; }
+    .lg-info { color: #64748B; }
+    .lg-hd   { color: #0F172A; font-weight: 700; }
+
+    .summary-box {
+      margin-top: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .summary-box.ok  { background: #D1FAE5; color: #065F46; }
+    .summary-box.err { background: #FEE2E2; color: #991B1B; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 28px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6D28D9;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <h1>🐾 Popular banco de dados — Nina Meds</h1>
+  <p class="subtitle">
+    Insere todos os remédios da Nina no Supabase.<br>
+    <strong>Seguro rodar várias vezes</strong> — verifica duplicatas automaticamente.<br>
+    Doses já confirmadas <strong>não são apagadas</strong>.
+  </p>
+
+  <!-- Preview dos remédios -->
+  <div class="meds-preview">
+    <h2>Remédios que serão cadastrados</h2>
+
+    <div class="med-row"><span class="med-dot dot-amber"></span><span class="med-nm">Dipirona</span><span class="med-info">6h e 18h · 16/05 a 18/05</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Cist Control</span><span class="med-info">7h, 14h e 21h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-amber"></span><span class="med-nm">Up Flora</span><span class="med-info">16h · 16/05 a 23/05</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Manipulado 1</span><span class="med-info">16h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Manipulado 2</span><span class="med-info">16h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Pronefa</span><span class="med-info">7h e 19h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-amber"></span><span class="med-nm">Lactulose 2ml</span><span class="med-info">7h e 19h · 16/05 a 27/05</span></div>
+    <div class="med-row"><span class="med-dot dot-green"></span><span class="med-nm">Ograx Plus 15</span><span class="med-info">7h · 16/05 em diante (3 meses)</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Kalium Vet</span><span class="med-info">7h e 19h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-amber"></span><span class="med-nm">Anlodipino 5mg</span><span class="med-info">7h e 19h · 16/05 a 30/05</span></div>
+    <div class="med-row"><span class="med-dot dot-blue"></span><span class="med-nm">Becordil 5mg</span><span class="med-info">20h · 16/05 a 14/06</span></div>
+    <div class="med-row"><span class="med-dot dot-red"></span><span class="med-nm">Meropenem 50mg</span><span class="med-info">8h e 20h · 16/05 a 23/05 · Injetável</span></div>
+  </div>
+
+  <div class="total-badge" id="total-badge">Calculando total de doses...</div>
+
+  <div class="btn-row">
+    <button id="seed-btn" onclick="runSeed()">▶ Inserir doses faltantes</button>
+    <button id="clear-btn" onclick="clearAndReseed()">⚠️ Limpar pendentes e reinserir</button>
+  </div>
+
+  <div id="log" class="log-box"><span class="lg-info">Aguardando...</span></div>
+  <div id="summary" style="display:none"></div>
+
+  <a href="index.html" class="back-link">← Voltar ao app</a>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://nmutzzsfsmewcmnpjabh.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_4nQqCttz-mF1MtVmq_fMAA_FBBVdDOB';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ===== CONFIGURAÇÃO DOS REMÉDIOS =====
+    const MEDS = [
+      { name: 'Dipirona',       times: ['06:00', '18:00'],          start: '2026-05-16', end: '2026-05-18' },
+      { name: 'Cist Control',   times: ['07:00', '14:00', '21:00'], start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Up Flora',       times: ['16:00'],                   start: '2026-05-16', end: '2026-05-23' },
+      { name: 'Manipulado 1',   times: ['16:00'],                   start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Manipulado 2',   times: ['16:00'],                   start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Pronefa',        times: ['07:00', '19:00'],          start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Lactulose 2ml',  times: ['07:00', '19:00'],          start: '2026-05-16', end: '2026-05-27' },
+      { name: 'Ograx Plus 15',  times: ['07:00'],                   start: '2026-05-16', end: '2026-08-16' },
+      { name: 'Kalium Vet',     times: ['07:00', '19:00'],          start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Anlodipino 5mg', times: ['07:00', '19:00'],          start: '2026-05-16', end: '2026-05-30' },
+      { name: 'Becordil 5mg',   times: ['20:00'],                   start: '2026-05-16', end: '2026-06-14' },
+      { name: 'Meropenem 50mg', times: ['08:00', '20:00'],          start: '2026-05-16', end: '2026-05-23' },
+    ];
+
+    // ===== GERA RANGE DE DATAS =====
+    function dateRange(start, end) {
+      const dates = [];
+      const cur = new Date(start + 'T12:00:00Z');
+      const fin = new Date(end   + 'T12:00:00Z');
+      while (cur <= fin) {
+        dates.push(cur.toISOString().slice(0, 10));
+        cur.setUTCDate(cur.getUTCDate() + 1);
+      }
+      return dates;
+    }
+
+    // ===== GERA TODOS OS REGISTROS =====
+    function generateAll() {
+      const list = [];
+      for (const med of MEDS) {
+        for (const date of dateRange(med.start, med.end)) {
+          for (const time of med.times) {
+            list.push({
+              remedio:          med.name,
+              horario_previsto: time,
+              data_dose:        date,
+              status:           'pendente',
+              cuidadora:        null,
+              confirmado_em:    null,
+            });
+          }
+        }
+      }
+      return list;
+    }
+
+    // Mostrar total imediatamente
+    (function() {
+      const total = generateAll().length;
+      document.getElementById('total-badge').textContent = `Total: ${total} doses a cadastrar`;
+    })();
+
+    // ===== LOG =====
+    const logEl = document.getElementById('log');
+    const sumEl = document.getElementById('summary');
+
+    function log(msg, cls = 'lg-info') {
+      logEl.innerHTML += `<div class="${cls}">${msg}</div>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      logEl.innerHTML = '';
+      sumEl.style.display = 'none';
+    }
+
+    function summary(ok, msg) {
+      sumEl.className = `summary-box ${ok ? 'ok' : 'err'}`;
+      sumEl.textContent = msg;
+      sumEl.style.display = 'block';
+    }
+
+    // ===== INSERIR FALTANTES =====
+    async function insertMissing() {
+      const seedBtn = document.getElementById('seed-btn');
+      seedBtn.disabled = true;
+
+      try {
+        log('🔍 Buscando doses já cadastradas...', 'lg-hd');
+
+        // Fetch ALL existing records (select only key fields)
+        let existing = [];
+        let from = 0;
+        const PAGE = 1000;
+        while (true) {
+          const { data, error } = await db
+            .from('nina_doses')
+            .select('remedio, data_dose, horario_previsto')
+            .range(from, from + PAGE - 1);
+          if (error) throw new Error(error.message);
+          existing = existing.concat(data || []);
+          if (!data || data.length < PAGE) break;
+          from += PAGE;
+        }
+
+        // Build lookup set (normalize time to HH:MM)
+        const existSet = new Set(existing.map(r =>
+          `${r.remedio}|${r.data_dose}|${(r.horario_previsto||'').slice(0,5)}`
+        ));
+
+        log(`✅ ${existing.length} doses já existem no banco.`, 'lg-ok');
+
+        const all = generateAll();
+        log(`📊 Total esperado: ${all.length} doses`, 'lg-hd');
+
+        const missing = all.filter(d =>
+          !existSet.has(`${d.remedio}|${d.data_dose}|${d.horario_previsto}`)
+        );
+
+        if (missing.length === 0) {
+          log('🎉 Banco completo — nenhuma dose para inserir.', 'lg-ok');
+          summary(true, '✅ Banco de dados já está completo!');
+          return;
+        }
+
+        log(`📥 Inserindo ${missing.length} doses faltantes...`, 'lg-hd');
+
+        // Insert in batches of 100
+        const BATCH = 100;
+        let inserted = 0, errors = 0;
+
+        for (let i = 0; i < missing.length; i += BATCH) {
+          const batch = missing.slice(i, i + BATCH);
+          const { error } = await db.from('nina_doses').insert(batch);
+          const batchNum = Math.floor(i / BATCH) + 1;
+          const totalBatches = Math.ceil(missing.length / BATCH);
+
+          if (error) {
+            log(`❌ Lote ${batchNum}: ${error.message}`, 'lg-err');
+            errors += batch.length;
+          } else {
+            inserted += batch.length;
+            log(`✅ Lote ${batchNum}/${totalBatches} inserido (${inserted}/${missing.length})`, 'lg-ok');
+          }
+        }
+
+        if (errors === 0) {
+          summary(true, `✅ ${inserted} doses inseridas com sucesso!`);
+        } else {
+          summary(false, `⚠️ ${inserted} inseridas, ${errors} com erro. Verifique as permissões do Supabase (RLS).`);
+        }
+
+      } catch (e) {
+        log(`❌ Erro inesperado: ${e.message}`, 'lg-err');
+        summary(false, 'Erro inesperado. Verifique o console do navegador.');
+      } finally {
+        seedBtn.disabled = false;
+      }
+    }
+
+    function runSeed() {
+      clearLog();
+      insertMissing();
+    }
+
+    // ===== LIMPAR E REINSERIR =====
+    async function clearAndReseed() {
+      if (!confirm(
+        'Isso vai APAGAR todas as doses com status "pendente" e reinserir.\n' +
+        'Doses já confirmadas serão mantidas.\n\nContinuar?'
+      )) return;
+
+      clearLog();
+      const clearBtn = document.getElementById('clear-btn');
+      clearBtn.disabled = true;
+
+      log('🗑️ Removendo doses pendentes...', 'lg-hd');
+
+      const { error } = await db
+        .from('nina_doses')
+        .delete()
+        .eq('status', 'pendente');
+
+      if (error) {
+        log(`❌ Erro ao apagar: ${error.message}`, 'lg-err');
+        summary(false, 'Erro ao limpar. Verifique as permissões do Supabase.');
+        clearBtn.disabled = false;
+        return;
+      }
+
+      log('✅ Doses pendentes removidas.', 'lg-ok');
+      clearBtn.disabled = false;
+      await insertMissing();
+    }
+  </script>
+</body>
+</html>

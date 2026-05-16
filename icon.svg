@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Fundo roxo arredondado -->
+  <rect width="192" height="192" rx="40" fill="#7C3AED"/>
+
+  <!-- Patinha central -->
+  <ellipse cx="96" cy="110" rx="28" ry="24" fill="white"/>
+
+  <!-- Dedos superiores -->
+  <ellipse cx="62" cy="82"  rx="13" ry="17" fill="white"/>
+  <ellipse cx="84" cy="70"  rx="13" ry="17" fill="white"/>
+  <ellipse cx="108" cy="70" rx="13" ry="17" fill="white"/>
+  <ellipse cx="130" cy="82" rx="13" ry="17" fill="white"/>
+
+  <!-- Almofada central (detalhe rosa) -->
+  <ellipse cx="96" cy="112" rx="18" ry="15" fill="#DDD6FE"/>
+
+  <!-- Almofadas dos dedos -->
+  <ellipse cx="62"  cy="85"  rx="7" ry="9"  fill="#DDD6FE"/>
+  <ellipse cx="84"  cy="73"  rx="7" ry="9"  fill="#DDD6FE"/>
+  <ellipse cx="108" cy="73"  rx="7" ry="9"  fill="#DDD6FE"/>
+  <ellipse cx="130" cy="85"  rx="7" ry="9"  fill="#DDD6FE"/>
+</svg>
