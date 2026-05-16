@@ -5,44 +5,306 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#2A9D8F">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Nega Meds">
+  <meta name="apple-mobile-web-app-title" content="Nina Meds">
   <title>Central de Medicamentos da Nega</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #FAF7F2;
+      --white:    #FFFFFF;
+      --border:   #E8E4DC;
+      --primary:  #2A9D8F;
+      --pri-lt:   #E6F4F2;
+      --pri-dk:   #1E7268;
+      --pri-bd:   #8DCEC8;
+      --orange:   #EA580C;
+      --ora-lt:   #FFF3E0;
+      --ora-bd:   #FBCF9B;
+      --red:      #DC2626;
+      --amber:    #F59E0B;
+      --blue:     #2563EB;
+      --blue-lt:  #DBEAFE;
+      --blue-bd:  #93C5FD;
+      --teal:     #0891B2;
+      --teal-lt:  #E0F2FE;
+      --teal-bd:  #7DD3FC;
+      --gray:     #6B7280;
+      --gray-lt:  #F3F4F6;
+      --text:     #1A1A2E;
+      --radius:   20px;
+      --shadow:   0 2px 12px rgba(0,0,0,.07);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    #login-screen.active { display: flex; }
+
+    .login-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 32px;
+      width: 100%; max-width: 360px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+
+    .lp-ring {
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 3px solid var(--primary);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--pri-lt); flex-shrink: 0;
+    }
+    .lp-img { width: 100%; height: 100%; object-fit: cover; }
+    .lp-fb  { font-size: 52px; }
+
+    .l-title { font-size: 18px; font-weight: 700; text-align: center; }
+    .l-sub   { font-size: 14px; color: var(--gray); text-align: center; }
+
+    .l-input {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-family: inherit; font-size: 15px;
+      background: var(--bg); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .l-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(42,157,143,.12);
+    }
+    .l-btn {
+      width: 100%; background: var(--primary); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 13px; font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .l-btn:hover { background: var(--pri-dk); }
+
+    /* ── APP SCREEN ── */
+    #app-screen { min-height: 100vh; padding-bottom: 76px; }
+    #app-screen.active { display: block; }
+
+    /* Header */
+    .hdr {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+    }
+    .hdr-in {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      max-width: 480px; margin: 0 auto;
+    }
+    .hdr-left { display: flex; align-items: center; gap: 10px; }
+    .hp-ring {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--primary); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--pri-lt); flex-shrink: 0;
+    }
+    .hp-img { width: 100%; height: 100%; object-fit: cover; }
+    .hp-fb  { font-size: 18px; }
+    .hdr-text { display: flex; flex-direction: column; gap: 1px; }
+    .hdr-name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+    .day-badge {
+      font-size: 11px; font-weight: 600;
+      background: var(--pri-lt); color: var(--primary);
+      border-radius: 20px; padding: 2px 8px; display: inline-block;
+    }
+    .conn-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--primary); flex-shrink: 0;
+    }
+
+    /* Chips */
+    .chips-wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding: 14px 16px 8px; max-width: 480px; margin: 0 auto;
+    }
+    .chip { border-radius: 14px; padding: 12px 14px; border: 1.5px solid transparent; }
+    .chip-n { display: block; font-size: 22px; font-weight: 800; line-height: 1; }
+    .chip-l { display: block; font-size: 11px; font-weight: 500; margin-top: 3px; opacity: .75; }
+    .chip-green  { background: var(--pri-lt);  border-color: var(--pri-bd);  color: var(--pri-dk); }
+    .chip-orange { background: var(--ora-lt);  border-color: var(--ora-bd);  color: #9A3412; }
+    .chip-blue   { background: var(--blue-lt); border-color: var(--blue-bd); color: #1E40AF; }
+    .chip-teal   { background: var(--teal-lt); border-color: var(--teal-bd); color: #0E7490; }
+
+    /* Progress */
+    .prog-area { padding: 0 16px 12px; max-width: 480px; margin: 0 auto; }
+    .prog-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .prog-fill  { height: 100%; background: var(--primary); border-radius: 99px; transition: width .4s ease; width: 0%; }
+    .prog-label { display: block; font-size: 11px; color: var(--gray); margin-top: 4px; text-align: right; }
+
+    /* Page body */
+    .page-body {
+      padding: 0 16px 16px; max-width: 480px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .block { display: flex; flex-direction: column; gap: 10px; }
+    .sec-row  { display: flex; align-items: center; gap: 10px; }
+    .sec-title {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--gray); white-space: nowrap;
+    }
+    .sec-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* Time group */
+    .time-group { display: flex; flex-direction: column; gap: 6px; }
+    .tg-hdr { display: flex; align-items: center; gap: 6px; padding: 0 2px; }
+    .tg-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+    .tg-hdr.done .tg-dot  { background: #22C55E; }
+    .tg-hour { font-size: 13px; font-weight: 700; }
+    .tg-hdr.done .tg-hour { color: var(--gray); text-decoration: line-through; }
+    .tg-dash  { font-size: 12px; color: var(--border); }
+    .tg-count { font-size: 12px; color: var(--gray); }
+
+    /* Dose card */
+    .dose-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 13px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      transition: background .2s, border-color .2s;
+    }
+    .dose-card.st-mine  { background: var(--pri-lt); border-color: var(--pri-bd); }
+    .dose-card.st-other { background: var(--ora-lt); border-color: var(--ora-bd); }
+
+    .dose-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0; }
+    .cat-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .cat-dot.red   { background: var(--red); }
+    .cat-dot.amber { background: var(--amber); }
+    .cat-dot.blue  { background: var(--blue); }
+    .cat-dot.green { background: var(--primary); }
+
+    .dose-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .dose-name {
+      font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .late-tag {
+      font-size: 10px; font-weight: 700;
+      background: #FEE2E2; color: var(--red);
+      border-radius: 6px; padding: 1px 6px;
+    }
+    .dose-conf { font-size: 12px; font-weight: 500; line-height: 1.5; }
+    .dose-conf.mine  { color: var(--pri-dk); }
+    .dose-conf.other { color: var(--orange); }
+
+    .check-btn {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .check-btn:hover { background: var(--pri-dk); }
+
+    .undo-btn {
+      background: transparent; color: var(--pri-dk);
+      border: 1.5px solid var(--pri-bd); border-radius: 10px;
+      padding: 7px 12px; font-family: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .undo-btn:hover { background: var(--pri-lt); }
+
+    .all-done-card {
+      background: var(--pri-lt); border: 1.5px solid var(--pri-bd);
+      border-radius: var(--radius); padding: 24px;
+      text-align: center; color: var(--pri-dk);
+    }
+    .all-done-card p { font-size: 15px; font-weight: 600; line-height: 1.6; }
+
+    /* Alerts */
+    .alert-card {
+      border-radius: 14px; padding: 13px 14px;
+      display: flex; align-items: flex-start; gap: 10px;
+      border: 1.5px solid transparent;
+    }
+    .al-yellow { background: #FFFBEB; border-color: #FDE68A; }
+    .al-blue   { background: var(--blue-lt); border-color: var(--blue-bd); }
+    .al-red    { background: #FEE2E2; border-color: #FCA5A5; }
+    .al-ico    { font-size: 20px; flex-shrink: 0; }
+    .al-title  { font-size: 13px; font-weight: 600; }
+    .al-date   { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+    /* Footer */
+    .ftr {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: var(--white); border-top: 1px solid var(--border);
+      padding: 10px 16px;
+    }
+    .ftr-in {
+      display: flex; align-items: center; gap: 8px;
+      max-width: 480px; margin: 0 auto;
+    }
+    .ftr-ico  { font-size: 16px; }
+    .ftr-name { flex: 1; font-size: 14px; font-weight: 600; }
+    .btn-trocar {
+      background: var(--gray-lt); color: var(--gray);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 6px 12px; font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .btn-trocar:hover { background: var(--border); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%);
+      background: rgba(26,26,46,.88); color: #fff;
+      padding: 10px 20px; border-radius: 99px;
+      font-size: 13px; font-weight: 600;
+      white-space: nowrap; pointer-events: none;
+      transition: opacity .25s; z-index: 300;
+    }
+    .toast.hidden { opacity: 0; }
+
+    .st-empty {
+      text-align: center; color: var(--gray);
+      font-size: 14px; padding: 32px 16px; line-height: 1.7;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ╔══════════════════════════════╗
-     ║        TELA DE LOGIN         ║
-     ╚══════════════════════════════╝ -->
+<!-- LOGIN -->
 <div id="login-screen" class="screen active">
   <div class="login-card">
-
     <div class="lp-ring">
       <img src="nina.jpg" alt="Nina" class="lp-img"
         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
       <div class="lp-fb" style="display:none">🐾</div>
     </div>
-
     <h1 class="l-title">Central de Medicamentos da Nega</h1>
     <p class="l-sub">Quem está cuidando agora?</p>
-
     <input type="text" id="caregiver-name" class="l-input"
       placeholder="Digite seu nome…" autocomplete="off" maxlength="40">
-
     <button id="enter-btn" class="l-btn">Entrar no sistema</button>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════╗
-     ║        TELA PRINCIPAL        ║
-     ╚══════════════════════════════╝ -->
+<!-- APP -->
 <div id="app-screen" class="screen">
 
-  <!-- ── Header sticky ── -->
   <header class="hdr">
     <div class="hdr-in">
       <div class="hdr-left">
@@ -56,11 +318,10 @@
           <span id="day-badge" class="day-badge"></span>
         </div>
       </div>
-      <span id="conn-dot" class="conn-dot connecting" title="Status da conexão"></span>
+      <span class="conn-dot" title="Modo local"></span>
     </div>
   </header>
 
-  <!-- ── Dashboard: 4 chips ── -->
   <div class="chips-wrap">
     <div class="chip chip-green">
       <span id="c-done" class="chip-n">—</span>
@@ -80,34 +341,29 @@
     </div>
   </div>
 
-  <!-- ── Barra de progresso ── -->
   <div class="prog-area">
     <div class="prog-track"><div id="prog-fill" class="prog-fill"></div></div>
     <span id="prog-label" class="prog-label"></span>
   </div>
 
-  <!-- ── Conteúdo rolável ── -->
   <div class="page-body">
 
-    <!-- Checklist -->
     <section class="block">
       <div class="sec-row">
         <span class="sec-title">Horários de hoje</span>
         <div class="sec-line"></div>
       </div>
-      <div id="checklist">
-        <div class="st-loading">
-          <div class="spinner"></div>
-          <p>Carregando doses…</p>
-        </div>
-      </div>
+      <div id="checklist"></div>
     </section>
 
-    <!-- Alertas -->
     <section class="block">
       <div class="sec-row">
         <span class="sec-title">Atenção</span>
         <div class="sec-line"></div>
+      </div>
+      <div class="alert-card al-red">
+        <span class="al-ico">💉</span>
+        <div><p class="al-title">Meropenem encerra</p><p class="al-date">23/05/2026</p></div>
       </div>
       <div class="alert-card al-yellow">
         <span class="al-ico">⚠️</span>
@@ -117,15 +373,10 @@
         <span class="al-ico">🔬</span>
         <div><p class="al-title">Reavaliar urinálise</p><p class="al-date">30/05/2026</p></div>
       </div>
-      <div class="alert-card al-red">
-        <span class="al-ico">💉</span>
-        <div><p class="al-title">Meropenem encerra</p><p class="al-date">23/05/2026</p></div>
-      </div>
     </section>
 
-  </div><!-- /page-body -->
+  </div>
 
-  <!-- ── Footer fixo ── -->
   <footer class="ftr">
     <div class="ftr-in">
       <span class="ftr-ico">👤</span>
@@ -134,17 +385,269 @@
     </div>
   </footer>
 
-</div><!-- /app-screen -->
+</div>
 
-<!-- Toast global -->
 <div id="toast" class="toast hidden"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
 <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+'use strict';
+
+/* ─── MEDICAMENTOS ─────────────────────────────────────────── */
+const MEDS = [
+  { name: 'Dipirona',       times: ['06:00','18:00'],         until: '2026-05-18', cat: 'amber' },
+  { name: 'Cist Control',   times: ['07:00','14:00','21:00'], until: '2026-06-14', cat: 'blue'  },
+  { name: 'Ograx Plus 15',  times: ['07:00'],                 until: null,         cat: 'green' },
+  { name: 'Kalium Vet',     times: ['07:00','19:00'],         until: '2026-06-14', cat: 'blue'  },
+  { name: 'Anlodipino 5mg', times: ['07:00','19:00'],         until: '2026-05-30', cat: 'amber' },
+  { name: 'Pronefa',        times: ['07:00','19:00'],         until: '2026-06-14', cat: 'blue'  },
+  { name: 'Lactulose 2ml',  times: ['07:00','19:00'],         until: '2026-05-27', cat: 'amber' },
+  { name: 'Meropenem 50mg', times: ['08:00','20:00'],         until: '2026-05-23', cat: 'red'   },
+  { name: 'Up Flora',       times: ['16:00'],                 until: '2026-05-23', cat: 'amber' },
+  { name: 'Manipulado 1',   times: ['16:00'],                 until: '2026-06-14', cat: 'blue'  },
+  { name: 'Manipulado 2',   times: ['16:00'],                 until: '2026-06-14', cat: 'blue'  },
+  { name: 'Hepvet',         times: ['16:00'],                 until: '2026-06-14', cat: 'blue'  },
+  { name: 'Becordil 5mg',   times: ['20:00'],                 until: '2026-06-14', cat: 'blue'  },
+];
+
+const TREATMENT_START = new Date('2026-05-16T00:00:00');
+
+/* ─── ESTADO ───────────────────────────────────────────────── */
+let caregiver  = '';
+let toastTimer = null;
+
+/* ─── HELPERS ──────────────────────────────────────────────── */
+const $   = id => document.getElementById(id);
+const pad = n  => String(n).padStart(2, '0');
+
+function escH(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function nowHHMM() {
+  const d = new Date();
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fmtHour(hhmm) { return `${parseInt(hhmm)}h`; }
+
+function treatmentDay() {
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.max(1, Math.round((t - TREATMENT_START) / 86_400_000) + 1);
+}
+
+/* ─── DOSES DO DIA ─────────────────────────────────────────── */
+function getDoses() {
+  const today = todayStr();
+  const list  = [];
+  MEDS.forEach(med => {
+    if (med.until && today > med.until) return;
+    med.times.forEach(time => {
+      list.push({ id: `${med.name}||${time}`, name: med.name, time, cat: med.cat });
+    });
+  });
+  return list.sort((a, b) => a.time.localeCompare(b.time));
+}
+
+/* ─── LOCALSTORAGE ─────────────────────────────────────────── */
+function storageKey() { return `nina_done_${todayStr()}`; }
+
+function getConfs() {
+  try { return JSON.parse(localStorage.getItem(storageKey()) || '{}'); } catch { return {}; }
+}
+
+function saveConfs(c) { localStorage.setItem(storageKey(), JSON.stringify(c)); }
+
+/* ─── INIT ─────────────────────────────────────────────────── */
+function init() {
+  $('day-badge').textContent = `Dia ${treatmentDay()} de tratamento`;
+  const saved = localStorage.getItem('nina_caregiver');
+  if (saved?.trim()) openApp(saved.trim());
+  $('enter-btn').addEventListener('click', handleLogin);
+  $('caregiver-name').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  $('change-user-btn').addEventListener('click', logout);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+/* ─── LOGIN / LOGOUT ───────────────────────────────────────── */
+function handleLogin() {
+  const name = $('caregiver-name').value.trim();
+  if (!name) {
+    const inp = $('caregiver-name');
+    inp.focus();
+    inp.style.borderColor = '#DC2626';
+    inp.style.boxShadow   = '0 0 0 3px rgba(220,38,38,.12)';
+    setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 1600);
+    return;
   }
+  localStorage.setItem('nina_caregiver', name);
+  openApp(name);
+}
+
+function openApp(name) {
+  caregiver = name;
+  $('login-screen').classList.remove('active');
+  $('app-screen').classList.add('active');
+  $('ftr-name').textContent = name;
+  renderAll();
+}
+
+function logout() {
+  localStorage.removeItem('nina_caregiver');
+  caregiver = '';
+  $('app-screen').classList.remove('active');
+  $('login-screen').classList.add('active');
+  $('caregiver-name').value = '';
+  setTimeout(() => $('caregiver-name').focus(), 80);
+}
+
+/* ─── CONFIRMAR / DESFAZER ─────────────────────────────────── */
+function confirmDose(id) {
+  const confs = getConfs();
+  const conf  = confs[id];
+
+  if (conf) {
+    if (conf.cuidadora === caregiver) {
+      delete confs[id];
+      saveConfs(confs);
+      renderAll();
+      toast('Confirmação desfeita');
+    } else {
+      toast(`⚠️ Já dado por ${conf.cuidadora}`);
+    }
+    return;
+  }
+
+  const now = new Date();
+  confs[id] = {
+    cuidadora:     caregiver,
+    confirmado_em: now.toISOString(),
+    hora:          `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+  };
+  saveConfs(confs);
+  renderAll();
+  toast(`✅ ${id.split('||')[0]} confirmada!`);
+}
+
+/* ─── RENDER ───────────────────────────────────────────────── */
+function renderAll() {
+  const doses = getDoses();
+  const confs = getConfs();
+  updateChips(doses, confs);
+  renderChecklist(doses, confs);
+}
+
+function updateChips(doses, confs) {
+  const done  = doses.filter(d => confs[d.id]).length;
+  const pend  = doses.length - done;
+  const total = doses.length;
+  const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  const now   = nowHHMM();
+
+  const upcoming = doses
+    .filter(d => !confs[d.id] && d.time >= now)
+    .map(d => d.time).sort();
+  const nxt = upcoming.length
+    ? fmtHour(upcoming[0])
+    : (pend === 0 && total > 0 ? '✓' : '—');
+
+  $('c-done').textContent = done;
+  $('c-pend').textContent = pend;
+  $('c-pct').textContent  = `${pct}%`;
+  $('c-next').textContent = nxt;
+  $('prog-fill').style.width  = `${pct}%`;
+  $('prog-label').textContent = total > 0 ? `${done} de ${total} doses confirmadas` : '';
+}
+
+function renderChecklist(doses, confs) {
+  const el  = $('checklist');
+  const now = nowHHMM();
+
+  if (!doses.length) {
+    el.innerHTML = `<div class="st-empty">Nenhum remédio para hoje.<br>Todos os tratamentos encerraram.</div>`;
+    return;
+  }
+
+  const groups = {};
+  doses.forEach(d => { (groups[d.time] = groups[d.time] || []).push(d); });
+
+  let html = '';
+  Object.keys(groups).sort().forEach(time => {
+    const list    = groups[time];
+    const allDone = list.every(d => confs[d.id]);
+    const noun    = list.length === 1 ? 'remédio' : 'remédios';
+
+    html += `
+      <div class="time-group">
+        <div class="tg-hdr ${allDone ? 'done' : ''}">
+          <span class="tg-dot"></span>
+          <span class="tg-hour">${fmtHour(time)}</span>
+          <span class="tg-dash">—</span>
+          <span class="tg-count">${list.length} ${noun}</span>
+        </div>
+        ${list.map(d => cardHTML(d, confs[d.id], now)).join('')}
+      </div>`;
+  });
+
+  if (doses.every(d => confs[d.id])) {
+    html += `<div class="all-done-card"><p>🎉 Todas as doses confirmadas!<br>A Nega agradece! 🐶</p></div>`;
+  }
+
+  el.innerHTML = html;
+
+  el.querySelectorAll('[data-id]').forEach(btn => {
+    btn.addEventListener('click', () => confirmDose(btn.dataset.id));
+  });
+}
+
+function cardHTML(dose, conf, now) {
+  const isLate  = !conf && dose.time < now;
+  const isMine  = conf && conf.cuidadora === caregiver;
+  const cardCls = conf ? (isMine ? 'st-mine' : 'st-other') : 'st-pending';
+
+  const confMsg = conf
+    ? `<p class="dose-conf ${isMine ? 'mine' : 'other'}">
+         ${isMine ? '✅ Dado por' : '⚠️ Já dado por'} <strong>${escH(conf.cuidadora)}</strong> às ${conf.hora}
+       </p>`
+    : '';
+
+  const btn = !conf
+    ? `<button class="check-btn" data-id="${escH(dose.id)}">✓ Confirmar</button>`
+    : isMine
+      ? `<button class="undo-btn" data-id="${escH(dose.id)}">Desfazer</button>`
+      : '';
+
+  return `
+    <div class="dose-card ${cardCls}">
+      <div class="dose-left">
+        <span class="cat-dot ${dose.cat}"></span>
+        <div class="dose-body">
+          <div class="dose-name">
+            ${escH(dose.name)}${isLate ? '<span class="late-tag">Atrasada</span>' : ''}
+          </div>
+          ${confMsg}
+        </div>
+      </div>
+      ${btn}
+    </div>`;
+}
+
+/* ─── TOAST ────────────────────────────────────────────────── */
+function toast(msg) {
+  clearTimeout(toastTimer);
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
+}
+
+init();
 </script>
 </body>
 </html>
